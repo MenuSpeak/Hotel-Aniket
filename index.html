@@ -967,6 +967,37 @@
             color: rgba(255, 255, 255, 0.3);
         }
 
+        /* Restaurant Section Selector Styling */
+        #restaurantSection {
+            appearance: auto !important;
+            -webkit-appearance: auto !important;
+            background: rgba(255, 255, 255, 0.03) !important;
+            color: #e8e6e3 !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            padding: 12px 16px !important;
+            border-radius: 8px !important;
+            width: 100% !important;
+            font-size: 16px !important;
+            cursor: pointer !important;
+        }
+
+        #restaurantSection option {
+            background: #0b0b0d !important;
+            color: #e8e6e3 !important;
+            padding: 8px !important;
+        }
+
+        #restaurantSection:focus {
+            outline: none !important;
+            border-color: var(--gold2) !important;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.1) !important;
+        }
+
+        #restaurantSection option:checked {
+            background: linear-gradient(90deg, var(--gold1), var(--gold2)) !important;
+            color: #0b0b0d !important;
+        }
+
         .customer-details-summary {
             background: rgba(255, 255, 255, 0.02);
             border-radius: 8px;
@@ -1075,7 +1106,7 @@
         }
     </style>
 </head>  
-
+ 
 <body>
     <div class="container">  
         <div class="cafe-header">
@@ -1089,6 +1120,7 @@
                 <div class="cafe-subtitle"></div>
                 <div class="cafe-subtitle"></div>
                 <div class="mobile-numbers"><br>Mo no.+91 82084 80084</div>
+              <div class="lodging  room number "><br>no.101-102-103-201-202-203</div>
             </div>
             <div class="veg-nonveg">
                 <div class="veg">
@@ -1131,9 +1163,7 @@ text-decoration:none;
 
 
 
-
           
-
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
@@ -1187,10 +1217,6 @@ text-decoration:none;
                 <!-- Cards injected by JS -->
             </section>
         </main>
-
-
-
-
 
 
 
@@ -1290,6 +1316,19 @@ text-decoration:none;
                 </div>
 
                 <div class="delivery-form active" id="restaurantForm">
+                    <!-- Restaurant Section Selector - NEW ADDED -->
+                    <div class="form-group" id="restaurantSectionGroup">
+                        <label class="form-label" for="restaurantSection">Select Section</label>
+                        <select id="restaurantSection" class="form-input" style="appearance: auto; background: rgba(255,255,255,0.03); color: white; border: 1px solid rgba(255,255,255,0.05); padding: 12px 16px; border-radius: 8px; width: 100%; font-size: 16px;">
+                            <option value="" style="background: #0b0b0d; color: #9aa0a6;">-- Select Section --</option>
+                            <option value="Family" style="background: #0b0b0d; color: #e8e6e3;">🏠 Family</option>
+                            <option value="AC BAR" style="background: #0b0b0d; color: #e8e6e3;">❄️ AC BAR</option>
+                            <option value="BAR Garden" style="background: #0b0b0d; color: #e8e6e3;">🌿 BAR Garden</option>
+                            <option value="Cottage" style="background: #0b0b0d; color: #e8e6e3;">🏡 Cottage</option>
+                            <option value="Lodging" style="background: #0b0b0d; color: #e8e6e3;">🛏️ Lodging</option>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label" for="tableNumber">Table Number</label>
                         <input type="text" id="tableNumber" class="form-input" placeholder="Enter your table number (e.g., Table 5, Booth 2)" />
@@ -1564,13 +1603,6 @@ text-decoration:none;
 {"id": 216, "cat": "Roti", "name": "Butter Naan | बटर नान", "price": "Rs. 60", "desc": "Butter Naan", "tags": ["Veg", "Roti"], "img": "img/butter_naan.jpg"},
 {"id": 217, "cat": "Roti", "name": "Garlic Naan | गार्लिक नान", "price": "Rs. 60", "desc": "Garlic Naan", "tags": ["Veg", "Roti"], "img": "img/garlic_naan.jpg"},
 {"id": 218, "cat": "Roti", "name": "Kulcha | कुलचा", "price": "Rs. 60", "desc": "Kulcha", "tags": ["Veg", "Roti"], "img": "img/kulcha.jpg"},
-
-
-
-
-
-      
-              
         ];
 
         // Cart functionality    
@@ -1603,6 +1635,13 @@ text-decoration:none;
             document.getElementById('homeDeliveryOption').classList.toggle('active', type === 'home');
             document.getElementById('restaurantForm').classList.toggle('active', type === 'restaurant');
             document.getElementById('homeDeliveryForm').classList.toggle('active', type === 'home');
+            // Show/hide section selector based on delivery type
+            const sectionGroup = document.getElementById('restaurantSectionGroup');
+            if (type === 'restaurant') {
+                sectionGroup.style.display = 'block';
+            } else {
+                sectionGroup.style.display = 'none';
+            }
             updateCustomerDetailsSummary();
         }
 
@@ -1612,7 +1651,8 @@ text-decoration:none;
 
             if (deliveryType === 'restaurant') {
                 const tableNumber = document.getElementById('tableNumber').value.trim();
-                if (tableNumber) {
+                const section = document.getElementById('restaurantSection').value;
+                if (tableNumber || section) {
                     showSummary = true;
                     summaryHTML = `
                         <div class="summary-title">
@@ -1624,7 +1664,8 @@ text-decoration:none;
                         </div>
                         <div class="summary-details">
                             <div><strong>Type:</strong> Dine-in</div>
-                            <div><strong>Table Number:</strong> ${tableNumber}</div>
+                            ${section ? `<div><strong>Section:</strong> ${section}</div>` : ''}
+                            ${tableNumber ? `<div><strong>Table Number:</strong> ${tableNumber}</div>` : ''}
                         </div>
                     `;
                 }
@@ -1789,7 +1830,11 @@ text-decoration:none;
 
             if (deliveryType === 'restaurant') {
                 const tableNumber = document.getElementById('tableNumber').value.trim();
-                if (!tableNumber) {
+                const section = document.getElementById('restaurantSection').value;
+                if (!section) {
+                    validationPassed = false;
+                    validationMessage = 'Please select a section (Family, AC BAR, BAR Garden, Cottage, Lodging)';
+                } else if (!tableNumber) {
                     validationPassed = false;
                     validationMessage = 'Please enter your table number';
                 }
@@ -1813,7 +1858,9 @@ text-decoration:none;
 
             if (deliveryType === 'restaurant') {
                 const tableNumber = document.getElementById('tableNumber').value.trim();
+                const section = document.getElementById('restaurantSection').value;
                 message += `**Delivery Type:** Dine-in\n`;
+                message += `**Section:** ${section}\n`;
                 message += `**Table Number:** ${tableNumber}\n\n`;
             } else {
                 const customerName = document.getElementById('customerName').value.trim();
@@ -1917,6 +1964,7 @@ const whatsappURL = `https://wa.me/918208480084?text=${encodedMessage}`;
             document.getElementById('customerName').addEventListener('input', updateCustomerDetailsSummary);
             document.getElementById('customerMobile').addEventListener('input', updateCustomerDetailsSummary);
             document.getElementById('customerAddress').addEventListener('input', updateCustomerDetailsSummary);
+            document.getElementById('restaurantSection').addEventListener('change', updateCustomerDetailsSummary);
         });
 
         window.addToCart = addToCart;
